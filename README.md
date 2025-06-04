@@ -1,2 +1,2 @@
 # Anotações
-1. "topology.json" está configurado corretamente -- commit inicial
+1. Topologia está pronta -- usando somente portas

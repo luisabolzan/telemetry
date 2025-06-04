@@ -23,33 +23,33 @@
     {
       "table": "MyIngress.ipv4_lpm",
       "match": {
-        "hdr.ipv4.dstAddr": ["10.0.2.20", 24]
+        "hdr.ipv4.dstAddr": ["10.0.2.2", 32]
       },
       "action_name": "MyIngress.ipv4_forward",
       "action_params": {
-        "dstAddr": "08:00:00:00:02:00",
+        "dstAddr": "08:00:00:00:02:22",
         "port": 2
       }
     },
     {
       "table": "MyIngress.ipv4_lpm",
       "match": {
-        "hdr.ipv4.dstAddr": ["10.0.3.30", 32]
+        "hdr.ipv4.dstAddr": ["10.0.3.3", 32]
       },
       "action_name": "MyIngress.ipv4_forward",
       "action_params": {
-        "dstAddr": "08:00:00:00:03:00",
+        "dstAddr": "08:00:00:00:03:33",
         "port": 2
       }
     },
     {
       "table": "MyIngress.ipv4_lpm",
       "match": {
-        "hdr.ipv4.dstAddr": ["10.0.4.40", 32]
+        "hdr.ipv4.dstAddr": ["10.0.4.4", 32]
       },
       "action_name": "MyIngress.ipv4_forward",
       "action_params": {
-        "dstAddr": "08:00:00:00:04:00",
+        "dstAddr": "08:00:00:00:04:44",
         "port": 2
       }
     }    
