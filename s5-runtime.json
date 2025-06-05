@@ -52,6 +52,14 @@
         "dstAddr": "08:00:00:00:01:11",
         "port": 2
       }
-    }
+    },
+    {
+      "table": "MyIngress.current_switch_id",
+      "default_action": true,
+      "action_name": "MyIngress.set_this_switch_id",
+      "action_params": {
+        "switch_id_val": 29493
+      }
+    }    
   ]
 }

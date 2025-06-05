@@ -5,6 +5,13 @@
 
 const bit<16> TYPE_IPV4 = 0x800;
 
+const bit<16> S1 = 0x7331;
+const bit<16> S2 = 0x7332;
+const bit<16> S3 = 0x7333;
+const bit<16> S4 = 0x7334;
+const bit<16> S5 = 0x7335;
+const bit<16> EMPTY = 0x0000;
+
 /*************************************************************************
 *********************** H E A D E R S  ***********************************
 *************************************************************************/
@@ -36,8 +43,7 @@ header ipv4_t {
 
 // This function will output the path the package went through
 header path_t {
-    // what does it mean the size of the header?
-    // is it enough to put a 2 chars?
+    // each ascii character uses 8bits, the names have 2 ascii
     bit<16> first;
     bit<16> second;
     bit<16> third;
@@ -76,9 +82,13 @@ parser MyParser(packet_in packet,
 
     state parse_ipv4 {
         packet.extract(hdr.ipv4);
-        transition accept;
+        transition parse_path;
     }
 
+    state parse_path {
+        packet.extract(hdr.path);
+        transition accept;
+    }
 }
 
 /*************************************************************************
@@ -121,13 +131,50 @@ control MyIngress(inout headers hdr,
         default_action = drop();
     }
 
+    action set_this_switch_id(bit<16> switch_id_val){
+        meta.current_switch_id = switch_id_val;
+    }
+
+    table current_switch_id {
+        key = {} // can be empty
+        actions = {
+            set_this_switch_id;
+            NoAction;
+        }
+        size = 1;
+        default_action = NoAction;
+    }
+
+    // Init all paths as empty, then changes it according to the path the packet is 
+    // going thorugh.
+    action record_switch_in_path(){
+        if(!hdr.path.isValid()){
+            hdr.path.setValid();
+            hdr.path.first = EMPTY;
+            hdr.path.second = EMPTY; 
+            hdr.path.third = EMPTY;  
+        }
+        if(hdr.path.first == EMPTY){
+            hdr.path.first = meta.current_switch_id;
+        }else if(hdr.path.second == EMPTY){
+            hdr.path.second = meta.current_switch_id;
+        }else if(hdr.path.third == EMPTY){
+            hdr.path.third = meta.current_switch_id;
+        }
+    }
+
     apply {
         if (hdr.ipv4.isValid()) {
+            // 1. Get the ID of the current switch
+            current_switch_id.apply(); // This populates meta.current_switch_id
+            
+            if (meta.current_switch_id != EMPTY) {
+                record_switch_in_path();
+            }
             ipv4_lpm.apply();
         }
     }
 }
-
 /*************************************************************************
 ****************  E G R E S S   P R O C E S S I N G   *******************
 *************************************************************************/
