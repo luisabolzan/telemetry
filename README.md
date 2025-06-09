@@ -1,4 +1,8 @@
-# Anotações
-1. Topologia está pronta -- usando somente portas.
-2. Switches atualizados com seus nomes e lógica do P4 pronta.
-3. Receive.py pronto!
+# Telemetry
+<img src="tele_topo.png">
+
+## Description
+The idea is to send a message from one host to another and show the path, i.e., the switches the packet went through.
+
+## Example
+<img src="tele_example.png">
